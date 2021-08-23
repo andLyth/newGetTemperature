@@ -15,9 +15,7 @@ void DataHandler::m_timer_start( std::function<void(DataHandler*)> func/*, std::
     {
         while (true)
         {
-            //auto wakeUpTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(interval);
             func(this);
-            //std::this_thread::sleep_until(wakeUpTime);
         }
     }).detach();
 }
@@ -34,35 +32,32 @@ void DataHandler::m_pollADC()
         {
             /*converting adc value to temperature and pushing to queue*/
             m_temperQueue.push(stod(m_tempStr));
-            std::cout << 1 << std::endl;
-            auto wakeUpTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(m_fetchPeriod);
-            std::this_thread::sleep_until(wakeUpTime);
+            auto wakeUpTime_Fetch = std::chrono::steady_clock::now() + std::chrono::milliseconds(m_fetchPeriod);
+            std::this_thread::sleep_until(wakeUpTime_Fetch);
         }
         temperStream.close();
-
-
     }
     else
     {
         std::cout << "Error opening file";
     };
-
 }
 
 void DataHandler::m_convertToTemperature()
 {
+
     double temperature = 0.0;
     double maxVal = 0.0;
     double minVal = 50.0;
     double sum = 0.0;
     double average = 0.0;
     int countrForDivision = 0;
-
     static std::string endTime = "end time not generated";
     static std::string startTime; //empty on first run
     static std::deque<nlohmann::json> backupDeque;
 
-    if(startTime.empty()) startTime = getISOCurrentTimestamp<std::chrono::nanoseconds>();
+    //generate nextwake up time for thread
+    auto wakeUpTime_Send = std::chrono::steady_clock::now() + std::chrono::milliseconds(m_sendPeriod);
 
     /*convert ADC value to temperature and arrange temp value accordingly
       and store in container*/
@@ -84,6 +79,9 @@ void DataHandler::m_convertToTemperature()
 
     //create output files
     m_createOutputs(&maxVal, &minVal, &average, &endTime, &startTime);
+
+    //Thread to sleep
+    std::this_thread::sleep_until(wakeUpTime_Send);
 }
 
 void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double* ptr_average,
@@ -116,15 +114,17 @@ void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double
      //   std::cout << *it <<std::endl;
         o2 << std::setw(3) << j << std::endl;
     }
-    //std::cout << std::endl;
+
     if(backupDeque.size() >= MAX_VALUE_BACKUP_ELEMENT_SIZE) backupDeque.pop_front();
     o2.close();
 
-    //test by printing
-    //print(maxValuesBackup);
+    //pseudo-function call for sending file to localhost
+    //m_sendFile();
+    std::cout<<"1"<<std::endl;
 
     //generate start time for next period.
     *ptr_startTime = getISOCurrentTimestamp<std::chrono::nanoseconds>();
+
 
 }
 
