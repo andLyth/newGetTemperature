@@ -4,7 +4,7 @@
 
 #define TEMPERATURE_FILE "temperature.txt"
 #define WAIT_PERIOD_SEND 3000
-#define WAIT_PERIOD_FETCH 100
+#define WAIT_PERIOD_FETCH 1000
 
 
 

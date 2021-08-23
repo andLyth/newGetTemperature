@@ -33,13 +33,14 @@ class DataHandler
         int m_sendPeriod;
         std::string m_tempStr;
         std::string m_fileName;
-        void m_timer_start( std::function<void(DataHandler*)> func, std::uint32_t interval);
+        void m_timer_start( std::function<void(DataHandler*)> func/*, std::uint32_t interval*/);
         void m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double* ptr_average,
                           auto* ptr_endTime, auto* ptr_startTime);
         void m_pollADC();
         void m_convertToTemperature();
         void m_createOutputs();
         void m_sendFile();
+        void task(void);
         std::uint32_t m_sleepTime;
         std::queue<double> m_temperQueue;
 };

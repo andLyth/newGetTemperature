@@ -2,24 +2,27 @@
 
 DataHandler::DataHandler(std::string fileName, int fetchPeriod, int sendPeriod) : m_fileName(fileName), m_fetchPeriod(fetchPeriod), m_sendPeriod(sendPeriod)
 {
-    m_timer_start(m_pollADC, m_fetchPeriod);
-    m_timer_start(m_convertToTemperature, m_sendPeriod);
+    m_timer_start(m_pollADC/*, m_fetchPeriod*/);
+    //m_timer_start(task, m_fetchPeriod);
+    m_timer_start(m_convertToTemperature/*, m_sendPeriod*/);
 }
 
 DataHandler::~DataHandler(){}
 
-void DataHandler::m_timer_start( std::function<void(DataHandler*)> func, std::uint32_t interval)
+void DataHandler::m_timer_start( std::function<void(DataHandler*)> func/*, std::uint32_t interval*/)
 {
-    std::thread([this, func, interval]()
+    std::thread([this, func/*, interval*/]()
     {
         while (true)
         {
-            auto wakeUpTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(interval);
+            //auto wakeUpTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(interval);
             func(this);
-            std::this_thread::sleep_until(wakeUpTime);
+            //std::this_thread::sleep_until(wakeUpTime);
         }
     }).detach();
 }
+
+void DataHandler::task(void){std::cout << 1 << std::endl;}
 
 void DataHandler::m_pollADC()
 {
@@ -31,6 +34,9 @@ void DataHandler::m_pollADC()
         {
             /*converting adc value to temperature and pushing to queue*/
             m_temperQueue.push(stod(m_tempStr));
+            std::cout << 1 << std::endl;
+            auto wakeUpTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(m_fetchPeriod);
+            std::this_thread::sleep_until(wakeUpTime);
         }
         temperStream.close();
 
@@ -58,9 +64,10 @@ void DataHandler::m_convertToTemperature()
 
     if(startTime.empty()) startTime = getISOCurrentTimestamp<std::chrono::nanoseconds>();
 
+    /*convert ADC value to temperature and arrange temp value accordingly
+      and store in container*/
     while (!m_temperQueue.empty())
     {
-        //convert ADC value to temperature and arrange temp value accordingly
         temperature = SLOPE * m_temperQueue.front()- INTERCEPT;
         m_temperQueue.pop();
         if(temperature > maxVal) maxVal = temperature;
@@ -69,7 +76,7 @@ void DataHandler::m_convertToTemperature()
         countrForDivision++;
     }
 
-    //calculate average for timeblock
+    //calculate average for time block
     average = sum/countrForDivision;
 
     //generate end time for this periods temperature readings.
