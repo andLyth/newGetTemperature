@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1629683403 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\main.cpp
+	<iostream>
+	<queue>
+	"DataHandler.h"
+
+1629683172 c:\users\medici\documents\github\newgettemperature\newgettemperature\datatracker.h
+	<string>
+	<chrono>
+	<cstdint>
+	<thread>
+	<functional>
+	<iostream>
+	<fstream>
+	<queue>
+
+1629682904 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\datatracker.cpp
+	"DataTracker.h"
+
+1629683172 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.cpp
+	"DataHandler.h"
+
+1629683671 c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.h
+	<string>
+	<chrono>
+	<cstdint>
+	<thread>
+	<functional>
+	<iostream>
+	<fstream>
+	<queue>
+

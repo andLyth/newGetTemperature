@@ -1,9 +1,16 @@
 #include <iostream>
+#include <queue>            //std::queue
+#include "DataHandler.h"
 
-using namespace std;
+#define TEMPERATURE_FILE "temperature.txt"
+
+
+
 
 int main()
 {
-    cout << "Hello world!" << endl;
-    return 0;
+    DataHandler handler1(TEMPERATURE_FILE, 1000, 3000);
+
+
+    while(true){}
 }
