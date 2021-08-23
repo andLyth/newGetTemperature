@@ -3,7 +3,7 @@
 DataHandler::DataHandler(std::string fileName, int fetchPeriod, int sendPeriod) : m_fileName(fileName), m_fetchPeriod(fetchPeriod), m_sendPeriod(sendPeriod)
 {
     m_timer_start(m_pollADC, m_fetchPeriod);
-    m_timer_start(m_sendFile, m_sendPeriod);
+    m_timer_start(m_convertToTemperature, m_sendPeriod);
 }
 
 DataHandler::~DataHandler(){}
@@ -43,9 +43,8 @@ void DataHandler::m_pollADC()
 
 }
 
-void DataHandler::m_sendFile()
+void DataHandler::m_convertToTemperature()
 {
-    std::cout << "2" << std::endl;
     double temperature = 0.0;
     double maxVal = 0.0;
     double minVal = 50.0;
@@ -104,13 +103,14 @@ void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double
     o1.close();
 
     //backup ten last JSON objects into JSON backup file. . Will be overwritten each WAIT_PERIOD_SEND
-    if(backupDeque.size() >= MAX_VALUE_BACKUP_ELEMENT_SIZE) backupDeque.pop_front();
     backupDeque.push_back(j);
     for (std::deque<nlohmann::json>::iterator it = backupDeque.begin(); it!=backupDeque.end(); ++it)
     {
-        std::cout << std::setprecision(2);
+     //   std::cout << *it <<std::endl;
         o2 << std::setw(3) << j << std::endl;
     }
+    //std::cout << std::endl;
+    if(backupDeque.size() >= MAX_VALUE_BACKUP_ELEMENT_SIZE) backupDeque.pop_front();
     o2.close();
 
     //test by printing
@@ -119,6 +119,18 @@ void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double
     //generate start time for next period.
     *ptr_startTime = getISOCurrentTimestamp<std::chrono::nanoseconds>();
 
+}
+
+
+//Pseudo code function for filesending to localhost.
+void DataHandler::m_sendFile(void)
+{
+
+    //send ."temeratureCalculations.json" or json object (j) to LOCAL_ADDRESS
+
+    //wait for reply (code)
+
+    //if code is 500, send "backup.json" to LOCAL_BACKUP_ADDRESS
 }
 
 

@@ -34,8 +34,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="DataTracker.cpp" />
-		<Unit filename="DataTracker.h" />
+		<Unit filename="DataHandler.cpp" />
+		<Unit filename="DataHandler.h" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

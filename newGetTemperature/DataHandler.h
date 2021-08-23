@@ -37,6 +37,8 @@ class DataHandler
         void m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double* ptr_average,
                           auto* ptr_endTime, auto* ptr_startTime);
         void m_pollADC();
+        void m_convertToTemperature();
+        void m_createOutputs();
         void m_sendFile();
         std::uint32_t m_sleepTime;
         std::queue<double> m_temperQueue;

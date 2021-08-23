@@ -17,10 +17,10 @@
 1629682904 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\datatracker.cpp
 	"DataTracker.h"
 
-1629685225 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.cpp
+1629687929 source:c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.cpp
 	"DataHandler.h"
 
-1629685265 c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.h
+1629687991 c:\users\medici\documents\github\newgettemperature\newgettemperature\datahandler.h
 	<string>
 	<chrono>
 	<cstdint>
