@@ -88,8 +88,8 @@ void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double
                           auto* ptr_endTime, auto* ptr_startTime)
 {
     static std::deque<nlohmann::json> backupDeque;
-    std::ofstream o1("temeratureCalculations.json");
-    std::ofstream o2("backup.json");
+    std::ofstream o1("TemperatureMeasurement.json");    //file with one period of calculated temperature measures
+    std::ofstream o2("backup.json");                    //BAckup file with ten last periods of calculated temperature measures
 
     //create json object
     nlohmann::json j = {
@@ -107,25 +107,22 @@ void DataHandler::m_createOutputs(double* ptr_maxVal, double* ptr_minVal, double
     o1 << std::setw(3) << j << std::endl;
     o1.close();
 
-    //backup ten last JSON objects into JSON backup file. . Will be overwritten each WAIT_PERIOD_SEND
+    //backup ten last JSON objects into JSON backup file. . Will be appended each WAIT_PERIOD_SEND
     backupDeque.push_back(j);
-    for (std::deque<nlohmann::json>::iterator it = backupDeque.begin(); it!=backupDeque.end(); ++it)
+        for (std::deque<nlohmann::json>::iterator it = backupDeque.begin(); it!=backupDeque.end(); ++it)
     {
-     //   std::cout << *it <<std::endl;
-        o2 << std::setw(3) << j << std::endl;
+        o2 << std::setw(3) << *it << std::endl;
     }
 
+    //Check size of deque and delete 11-th element
     if(backupDeque.size() >= MAX_VALUE_BACKUP_ELEMENT_SIZE) backupDeque.pop_front();
     o2.close();
 
     //pseudo-function call for sending file to localhost
     //m_sendFile();
-    std::cout<<"1"<<std::endl;
 
     //generate start time for next period.
     *ptr_startTime = getISOCurrentTimestamp<std::chrono::nanoseconds>();
-
-
 }
 
 
